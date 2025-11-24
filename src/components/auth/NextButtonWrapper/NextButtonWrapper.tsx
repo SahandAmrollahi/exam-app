@@ -10,9 +10,6 @@ export default function NextButtonWrapper() {
 
   if (pathname === "/register/phone")
     button = <NextPageButton type="submit" form="otpForm" />;
-  // register and login
-  // else if (pathname === "/register/entryCode")
-  //   return <NextPageButton onClick={() => router.push("/register/name")} />;
   else if (pathname === "/register/name")
     button = <NextPageButton type="submit" form="nameForm" />;
   else if (pathname === "/register/userName")
@@ -30,9 +27,7 @@ export default function NextButtonWrapper() {
   else if (pathname === "/login/entryCode")
     button = <NextPageButton onClick={() => router.push("/home")} />;
   else if (pathname === "/login/entryCodePass")
-    button = (
-      <NextPageButton onClick={() => router.push("/login/password")} />
-    );
+    button = <NextPageButton onClick={() => router.push("/login/password")} />;
   else if (pathname === "/profile/entryCode")
     button = (
       <NextPageButton onClick={() => router.push("/profile/password")} />

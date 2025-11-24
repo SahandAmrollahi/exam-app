@@ -60,9 +60,9 @@ const PhoneField: React.FC<PhoneType> = ({ setPhone, phone }) => {
       onSubmit={handleSend}
     >
       <div
-        className="bg-[#232323] box-border flex flex-row items-center py-2 px-2 gap-4
-           border border-solid rounded-2xl border-[#4C4C4C]
-           transition-all duration-200 w-[343px] h-14 relative"
+        className={`field-base w-[343px] h-14 relative ${
+             isValid ? "border-[#22c55e] ring-4 ring-[#22c55e]/20" : null
+           }`}
       >
         <div className="flex flex-row items-start p-2 gap-2 w-[47px] h-10 rounded-xl font-inter font-normal text-base bg-[#933147] text-[#F5F5F5]">
           +98

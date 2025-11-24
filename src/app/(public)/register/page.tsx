@@ -19,7 +19,7 @@ const RegisterPage = () => {
       </div>
       <Image
         className="container w-[345px] h-[410px] border-none mb-7 object-cover"
-        src="/assets/images/exam.jpg"
+        src="/assets/svg/Boarding.svg"
         alt="Register"
         width={344}
         height={420}

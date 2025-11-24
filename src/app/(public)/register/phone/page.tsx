@@ -7,7 +7,7 @@ const PhonePage = () => {
   const [phone, setPhone] = useState("");
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-[352px] flex-col items-center overflow-hidden pt-10">
+    <div className="flex flex-col items-center">
       <h1
         className="w-[343px] h-10 font-peyda font-bold text-[24px] leading-10 flex justify-center items-center text-center text-white mb-14"
         dir="rtl"

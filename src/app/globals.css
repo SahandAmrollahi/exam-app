@@ -8,3 +8,11 @@ body {
   font-family: vazir;
   background-color: #363537;
 }
+
+@layer components {
+  .field-base {
+    @apply bg-[#232323] box-border flex flex-row items-center py-2 px-2 gap-4
+           border border-solid rounded-2xl border-[#4C4C4C]
+           transition-all duration-200;
+  }
+}

@@ -1,5 +1,5 @@
 export type InitialTypes = {
-  temporaryToken: string; 
+  temporaryToken: string;
   phoneNumber: string;
   firstName: string;
   lastName: string;
@@ -9,6 +9,4 @@ export type InitialTypes = {
   password: string;
   confirmPassword: string;
   ageRangeId?: number;
-  roleId?: number;
-  interestIds: number[];
 };

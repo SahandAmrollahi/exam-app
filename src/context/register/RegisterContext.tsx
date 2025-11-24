@@ -14,14 +14,12 @@ type Action =
       payload: { firstName: string; lastName: string; displayName: string };
     }
   | { type: "SET_USERNAME"; payload: { username: string } }
-  | { type: "SET_EMAIL"; payload: { email?: string | null } }
+  | { type: "SET_EMAIL"; payload: { email: string } | null }
   | {
       type: "SET_PASSWORD";
       payload: { password: string; confirmPassword: string };
     }
-  | { type: "SET_AGE"; payload: { ageRangeId: number } } // 👈 اضافه شد
-  | { type: "SET_ROLE"; payload: { roleId: number } }
-  | { type: "SET_INTERESTS"; payload: { interestIds: number[] } }
+  | { type: "SET_AGE"; payload: { ageRangeId: number } }
   | { type: "RESET" };
 
 // ***************************************************************************************************
@@ -36,8 +34,6 @@ const initial: InitialTypes = {
   password: "",
   confirmPassword: "",
   ageRangeId: undefined,
-  roleId: undefined,
-  interestIds: [],
 };
 
 //  *************************************************************************************************
@@ -50,8 +46,6 @@ const reducer = (state: InitialTypes, action: Action) => {
     case "SET_EMAIL":
     case "SET_PASSWORD":
     case "SET_AGE":
-    case "SET_ROLE":
-    case "SET_INTERESTS":
       return { ...state, ...action.payload };
     case "RESET":
       return initial;

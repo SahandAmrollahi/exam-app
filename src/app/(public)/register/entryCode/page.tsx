@@ -1,6 +1,5 @@
 "use client";
 import { useRegistration } from "@/context/register/RegisterContext";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -9,27 +8,8 @@ export default function EntryCodePage() {
 
   const params = useSearchParams();
   const router = useRouter();
-  const shouldShowToast = params.get("toast") === "sent";
-  const [toastOpen, setToastOpen] = useState(shouldShowToast);
-
-  useEffect(() => {
-    if (!shouldShowToast) return;
-    const u = new URL(window.location.href);
-    u.searchParams.delete("toast");
-    router.replace(u.pathname + "?" + u.searchParams.toString(), {
-      scroll: false,
-    });
-  }, [shouldShowToast]);
-
-  // اتصال به auth/otp/verify/route.ts
 
   const phone = params.get("phone") || "";
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-
-  const [verifyState, setVerifyState] = useState<null | "success" | "error">(
-    null
-  );
 
   useEffect(() => {
     if (!phone) router.replace("/register/phone");
@@ -37,10 +17,8 @@ export default function EntryCodePage() {
 
   async function handleVerify() {
     if (!phone || !isValid) return;
-    setErr(null);
-    setLoading(true);
     try {
-      const res = await fetch("/api/auth/otp/verify", {
+      const res = await fetch("/api/auth/otp/request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -50,29 +28,23 @@ export default function EntryCodePage() {
       });
 
       const data = await res.json();
-
+      console.log(data);
       if (!res.ok || !data?.success) {
-        setVerifyState("error");
-        setErr(data?.message || "کد تایید نامعتبر است");
+        console.log(data?.message || "کد تایید نامعتبر است");
         return;
       }
       const temporaryToken = data?.temporaryToken;
       if (!temporaryToken) {
-        setVerifyState("error");
-        setErr("پاسخ سرور معتبر نیست (temporaryToken ندارد)");
+        console.log("پاسخ سرور معتبر نیست (temporaryToken ندارد)");
         return;
       }
       dispatch({
         type: "SET_OTP",
         payload: { temporaryToken, phoneNumber: phone },
       });
-
-      setVerifyState("success");
       router.push("/register/name");
     } catch {
-      setErr("خطای شبکه/سرور");
-    } finally {
-      setLoading(false);
+      console.log("خطای شبکه/سرور");
     }
   }
 
@@ -84,13 +56,15 @@ export default function EntryCodePage() {
     setOtp(onlyDigits);
   };
 
-  const isInvalid = otp.length > 0 && otp.length < 6;
   const isValid = otp.length === 6;
 
   useEffect(() => {
-    if (isValid && !loading && verifyState === null) handleVerify();
-  }, [isValid, loading]);
+    if (isValid) handleVerify();
+  }, [isValid]);
 
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
   return (
     <>
       <section className="flex flex-col items-center">
@@ -102,9 +76,9 @@ export default function EntryCodePage() {
         </h1>
 
         <div
-          className="bg-[#232323] box-border flex flex-row items-center py-2 px-2 gap-4
-           border border-solid rounded-2xl border-[#4C4C4C]
-           transition-all duration-200 w-[343px] h-14 relative cursor-text"
+          className={`field-base w-[343px] h-14 relative cursor-text ${
+            isValid ? "border-[#22c55e] ring-4 ring-[#22c55e]/20" : null
+          }`}
         >
           <input
             ref={inputRef}
@@ -115,7 +89,7 @@ export default function EntryCodePage() {
             value={otp}
             onChange={handleChange}
             aria-label="کد ۶ رقمی"
-            className="absolute inset-0 opacity-0 pointer-events-none"
+            className="absolute inset-0 opacity-0"
           />
 
           <div className="w-full h-full flex items-center justify-center gap-4">
@@ -134,7 +108,7 @@ export default function EntryCodePage() {
 
         <div
           dir="rtl"
-          className="flex flex-row justify-center items-center w-full mt-[16px]"
+          className="flex flex-row justify-center items-center w-full mt-4"
         >
           <p className="w-[52px] h-6 font-peyda font-semibold text-base leading-6 flex items-center text-center text-[#FFFFFF] ml-2">
             نگرفتی؟
