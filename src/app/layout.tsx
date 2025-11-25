@@ -5,6 +5,7 @@ import ClientTransition from "./client-transition";
 import BackButtonWrapper from "@/components/auth/BackButtonWrapper/BackButtonWrapper";
 import NextButtonWrapper from "@/components/auth/NextButtonWrapper/NextButtonWrapper";
 import { RegistrationProvider } from "@/context/register/RegisterContext";
+import { LoginProvider } from "@/context/login/LoginContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +32,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RegistrationProvider>
-          <BackButtonWrapper />
-          <ClientTransition>{children}</ClientTransition>
-          <NextButtonWrapper />
-        </RegistrationProvider>
+        <LoginProvider>
+          <RegistrationProvider>
+            <BackButtonWrapper />
+            <ClientTransition>{children}</ClientTransition>
+            <NextButtonWrapper />
+          </RegistrationProvider>
+        </LoginProvider>
       </body>
     </html>
   );

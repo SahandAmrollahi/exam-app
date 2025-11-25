@@ -10,7 +10,7 @@ const RegisterPage = () => {
     router.push("/register/phone");
   };
   const signIn = () => {
-    router.push("/login/login");
+    router.push("/login");
   };
   return (
     <div className="container mx-auto flex min-h-screen w-full max-w-[352px] flex-col items-center overflow-hidden pt-20">

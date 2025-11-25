@@ -1,60 +1,33 @@
 "use client";
-import { useRegistration } from "@/context/register/RegisterContext";
+import { useLogin } from "@/context/login/LoginContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
+type User = {
+  id: string;
+  username: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+};
+
 type DataResponse = {
   success: boolean;
-  phoneNumber: string;
-  temporaryToken: string;
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
   expiresIn: number;
+  user: User;
   message: string;
 };
 
 export default function EntryCodePage() {
-  const { dispatch, state } = useRegistration();
+  const { dispatch, state } = useLogin();
 
   const params = useSearchParams();
   const router = useRouter();
 
   const phone = params.get("phone") || "";
-
-  useEffect(() => {
-    if (!phone) router.replace("/register/phone");
-  }, [phone, router]);
-
-  async function handleVerify() {
-    if (!phone || !isValid) return;
-    try {
-      const res = await fetch("/api/auth/otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phoneNumber: phone,
-          otpCode: otp,
-        }),
-      });
-
-      const data: DataResponse = await res.json();
-      console.log(data);
-      if (!res.ok || !data?.success) {
-        console.log(data?.message || "کد تایید نامعتبر است");
-        return;
-      }
-      const temporaryToken = data?.temporaryToken;
-      if (!temporaryToken) {
-        console.log("پاسخ سرور معتبر نیست (temporaryToken ندارد)");
-        return;
-      }
-      dispatch({
-        type: "SET_OTP",
-        payload: { temporaryToken, phoneNumber: phone },
-      });
-      router.push("/register/name");
-    } catch {
-      console.log("خطای شبکه/سرور");
-    }
-  }
 
   const [otp, setOtp] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -67,12 +40,43 @@ export default function EntryCodePage() {
   const isValid = otp.length === 6;
 
   useEffect(() => {
-    if (isValid) handleVerify();
-  }, [isValid]);
+    if (!isValid || !phone) return;
+    dispatch({
+      type: "SET_LOGIN",
+      payload: {
+        otp: otp,
+      },
+    });
+    (async () => {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(state),
+      });
+      const data: DataResponse = await res.json();
+      console.log(data);
+      const accessToken = data?.accessToken;
+      const message = data?.message;
+      console.log("hi");
+
+      console.log(message);
+      window.localStorage.setItem("accessToken", accessToken);
+      router.push(`/home?message=${message}`);
+    })();
+  }, [state, otp, dispatch, isValid, phone, router]);
+
+  const loggedOnce = useRef(false);
 
   useEffect(() => {
-    console.log(state);
+    if (loggedOnce.current) return;
+    loggedOnce.current = true;
+    console.log("LoginContext state changed:", state);
   }, [state]);
+
+  useEffect(() => {
+    console.log("data omad ?", state);
+  }, [state]);
+
   return (
     <>
       <section className="flex flex-col items-center">
@@ -84,9 +88,10 @@ export default function EntryCodePage() {
         </h1>
 
         <div
-          className={`field-base w-[343px] h-14 relative cursor-text ${
+          className={`field-base w-[343px] h-[56px] relative cursor-text ${
             isValid ? "border-[#22c55e] ring-4 ring-[#22c55e]/20" : null
           }`}
+          onClick={() => inputRef.current?.focus()}
         >
           <input
             ref={inputRef}
@@ -97,7 +102,7 @@ export default function EntryCodePage() {
             value={otp}
             onChange={handleChange}
             aria-label="کد ۶ رقمی"
-            className="absolute inset-0 opacity-0"
+            className="absolute inset-0 opacity-0 pointer-events-none"
           />
 
           <div className="w-full h-full flex items-center justify-center gap-4">
@@ -118,10 +123,10 @@ export default function EntryCodePage() {
           dir="rtl"
           className="flex flex-row justify-center items-center w-full mt-4"
         >
-          <p className="w-[52px] h-6 font-peyda font-semibold text-base leading-6 flex items-center text-center text-[#FFFFFF] ml-2">
+          <p className="w-[52px] h-6 font-peyda leading-6 text-[15px] flex items-center text-center text-[#FFFFFF] ml-2">
             نگرفتی؟
           </p>
-          <button className="w-[9fpx] h-6 font-peyda font-semibold text-base leading-6 flex items-center text-center text-[#F9C74F] mr-2 cursor-pointer">
+          <button className="w-[91px] h-6 font-peyda leading-6 text-[15px] flex items-center text-center text-[#F9C74F] mr-2 cursor-pointer">
             دوباره بفرست.
           </button>
         </div>

@@ -13,4 +13,3 @@ export async function POST(req: NextRequest) {
     message: "کد تایید صحیح است.",
   });
 }
-``;

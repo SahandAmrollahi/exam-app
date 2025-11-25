@@ -12,7 +12,7 @@ const images = [
 ];
 
 const width = 352;
-const height = 358;
+const height = 418;
 
 const boarding = {
   "boarding-header": [
@@ -25,6 +25,24 @@ const boarding = {
     "می‌تونی تو بخش دیسکاور دنبال آزمونا بگردی، یا با یه پین‌کد ساده، توی چالشِ بقیه شرکت کنی!",
     "تو هر موضوعی که دوست داری، بازی کن و امتیاز بگیر!\n رتبه‌ت توی جدول رقابت بالا ببر و بدرخش!",
   ],
+};
+
+type User = {
+  id: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+};
+
+type DataResponse = {
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+  expiresIn: string;
+  user: User;
+  message: string;
 };
 
 const Boarding: React.FC = () => {
@@ -85,10 +103,14 @@ const Boarding: React.FC = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(state),
       });
-      console.log("bbinim chi shd", res);
-      const data = await res.json();
+      const data: DataResponse = await res.json();
       console.log("hello data :)", data);
       window.localStorage.setItem("accessToken", data?.accessToken);
+      if (data?.message === "ثبت نام با موفقیت انجام شد") {
+        router.push("/home");
+      } else {
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
     }

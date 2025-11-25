@@ -15,12 +15,12 @@ const BackPageButton: React.FC<RegNavProps> = ({ linkSkip }) => {
   const arrowIcon = "/assets/svg/ArrowRight.svg";
 
   return (
-    <nav className="back-page-button flex flex-row items-center w-[390px] h-[56px] px-[12px] justify-between mt-[44px] mx-auto">
+    <nav className="back-page-button flex flex-row items-center w-[390px] h-14 px-3 justify-between mt-11 mx-auto">
       {showSkip ? (
         <>
           <Link
             href={linkSkip!}
-            className="h-[24px] font-peyda font-semibold text-[16px] leading-[24px] text-[#7D7D7D] cursor-pointer"
+            className="h-6 font-peyda font-semibold text-[16px] leading-6 text-[#7D7D7D] cursor-pointer"
           >
             رد کردن
           </Link>

@@ -22,7 +22,7 @@ export default function NextButtonWrapper() {
     button = <NextPageButton type="submit" form="emailForm" />;
   else if (pathname === "/register/password")
     button = <NextPageButton type="submit" form="passwordForm" />;
-  else if (pathname === "/login/login")
+  else if (pathname === "/login")
     button = <NextPageButton type="submit" form="loginPhone" />;
   else if (pathname === "/login/entryCode")
     button = <NextPageButton onClick={() => router.push("/home")} />;
